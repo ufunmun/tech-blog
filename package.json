@@ -8,23 +8,30 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint \"**/*.{js,ts,vue}\"",
+    "lint": "eslint --fix \"**/*.{js,ts,vue}\" && prettier --write .",
+    "lint:check": "eslint \"**/*.{js,ts,vue}\" && prettier --check .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.48.1",
+    "@types/express": "^5.0.0",
+    "express": "^4.21.2",
     "nuxt": "^3.15.4",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^1.0.1",
+    "@types/node": "^22.13.1",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-vue": "^9.32.0",
     "prettier": "^3.4.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3",
     "vue-eslint-parser": "^9.4.3"
   }
 }

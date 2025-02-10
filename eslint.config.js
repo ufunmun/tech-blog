@@ -1,21 +1,21 @@
-import eslintPluginVue from 'eslint-plugin-vue';
-import tsParser from '@typescript-eslint/parser';
-import * as vueParser from 'vue-eslint-parser';
-import prettier from 'eslint-config-prettier';
+import eslintPluginVue from "eslint-plugin-vue";
+import tsParser from "@typescript-eslint/parser";
+import * as vueParser from "vue-eslint-parser";
+import prettier from "eslint-config-prettier";
 
 export default [
   {
-    ignores: ['node_modules', 'dist', '.nuxt'],
+    ignores: ["node_modules", "dist", ".nuxt"],
   },
   {
-    files: ['**/*.{js,ts,vue}'],
+    files: ["**/*.{js,ts,vue}"],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+      ecmaVersion: "latest",
+      sourceType: "module",
       parser: vueParser,
       parserOptions: {
         parser: tsParser,
-        extraFileExtensions: ['.vue'],
+        extraFileExtensions: [".vue"],
         ecmaFeatures: {
           jsx: true,
         },
@@ -25,13 +25,13 @@ export default [
       vue: eslintPluginVue,
     },
     rules: {
-      'vue/multi-word-component-names': 'off',
-      'vue/html-indent': ['error', 2],
-      'vue/html-self-closing': 'error',
-      'vue/component-name-in-template-casing': ['error', 'PascalCase'],
-      'vue/no-unused-components': 'warn',
-      'vue/max-attributes-per-line': [
-        'error',
+      "vue/multi-word-component-names": "off",
+      "vue/html-indent": ["error", 2],
+      "vue/html-self-closing": "error",
+      "vue/component-name-in-template-casing": ["error", "PascalCase"],
+      "vue/no-unused-components": "warn",
+      "vue/max-attributes-per-line": [
+        "error",
         {
           singleline: 3,
           multiline: 1,
