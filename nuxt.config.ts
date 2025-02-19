@@ -13,4 +13,13 @@ export default defineNuxtConfig({
       // 現時点では空
     },
   },
+
+  // Vuetifyの設定を追加
+  css: [
+    "vuetify/lib/styles/main.sass",
+    "@mdi/font/css/materialdesignicons.min.css",
+  ],
+  build: {
+    transpile: ["vuetify"],
+  },
 });

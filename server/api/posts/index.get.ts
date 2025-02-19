@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       return {
         statusCode: 400,
         message: "Database query failed",
-        error: supabaseError.message
+        error: supabaseError.message,
       };
     }
 
@@ -20,7 +20,6 @@ export default defineEventHandler(async (event) => {
       posts,
       message: "Posts fetched successfully",
     };
-
   } catch (error) {
     // 予期せぬエラーのハンドリング
     return {
@@ -29,4 +28,4 @@ export default defineEventHandler(async (event) => {
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
-}); 
+});
