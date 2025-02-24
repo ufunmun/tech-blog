@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from "nuxt/config";
+
 export default defineNuxtConfig({
   modules: ["@nuxtjs/supabase"],
   compatibilityDate: "2024-11-01",

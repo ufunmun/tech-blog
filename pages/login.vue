@@ -3,7 +3,7 @@
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6" lg="4">
         <v-card class="pa-4">
-          <v-card-title class="text-h5 mb-4"> ログイン </v-card-title>
+          <v-card-title class="text-h5 mb-4">ログイン</v-card-title>
 
           <v-form @submit.prevent="handleLogin">
             <v-text-field
@@ -13,19 +13,31 @@
               required
               variant="outlined"
               class="mb-4"
+              :error-messages="errorMessage ? [errorMessage] : []"
+              :disabled="isLoading"
             />
 
             <v-text-field
               v-model="password"
               label="パスワード"
-              type="password"
               required
               variant="outlined"
               class="mb-4"
+              :disabled="isLoading"
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="showPassword = !showPassword"
+              :type="showPassword ? 'text' : 'password'"
             />
 
-            <v-btn type="submit" color="primary" block class="mt-2">
-              ログイン
+            <v-btn
+              type="submit"
+              color="primary"
+              block
+              class="mt-2"
+              :loading="isLoading"
+              :disabled="isLoading"
+            >
+              {{ isLoading ? "ログイン中..." : "ログイン" }}
             </v-btn>
           </v-form>
         </v-card>
@@ -35,35 +47,53 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { createClient } from "@supabase/supabase-js";
-import { useRuntimeConfig, useRouter } from "nuxt/app";
+import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useSupabase } from "~/composables/useSupabase";
+import { useAuth } from "~/composables/useAuth";
 
-const config = useRuntimeConfig();
 const router = useRouter();
-const supabase = createClient(
-  config.public.SUPABASE_URL as string,
-  config.public.SUPABASE_KEY as string,
-);
-
+const supabase = useSupabase();
+const { user } = useAuth();
 const email = ref("");
 const password = ref("");
+const isLoading = ref(false);
+const errorMessage = ref("");
+const showPassword = ref(false);
+
+// ログイン済みの場合はホームにリダイレクト
+watch(
+  user,
+  (newUser) => {
+    if (newUser) {
+      router.push("/");
+    }
+  },
+  { immediate: true },
+);
 
 const handleLogin = async () => {
+  if (isLoading.value) return;
+
+  isLoading.value = true;
+  errorMessage.value = "";
+
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
 
     if (error) throw error;
 
-    // ログイン成功時の処理
-    console.log("ログイン成功:", data);
-    router.push("/");
-  } catch (error) {
-    console.error("ログインエラー:", error);
-    alert("ログインに失敗しました");
+    // 明示的にホームページに遷移
+    await router.push("/");
+  } catch (error: any) {
+    console.error("Login error:", error.message);
+    errorMessage.value =
+      "ログインに失敗しました。メールアドレスとパスワードを確認してください。";
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
