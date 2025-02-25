@@ -69,7 +69,7 @@ watch(
       router.push("/");
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 const handleLogin = async () => {
@@ -79,12 +79,16 @@ const handleLogin = async () => {
   errorMessage.value = "";
 
   try {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
 
     if (error) throw error;
+
+    if (data.user) {
+      useAuth().user.value = data.user;
+    }
 
     // 明示的にホームページに遷移
     await router.push("/");
