@@ -47,38 +47,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { ref } from "vue";
 import { useSupabase } from "~/composables/useSupabase";
-import { useAuth } from "~/composables/useAuth";
+import { navigateTo } from "nuxt/app";
 
-const router = useRouter();
 const supabase = useSupabase();
-const { user } = useAuth();
 const email = ref("");
 const password = ref("");
 const isLoading = ref(false);
 const errorMessage = ref("");
 const showPassword = ref(false);
 
-// ログイン済みの場合はホームにリダイレクト
-watch(
-  user,
-  (newUser) => {
-    if (newUser) {
-      router.push("/");
-    }
-  },
-  { immediate: true },
-);
-
+// ログインボタンを押した時の処理
 const handleLogin = async () => {
+  // ローディング中は処理を中断
   if (isLoading.value) return;
 
   isLoading.value = true;
   errorMessage.value = "";
 
   try {
+    // Supabaseでログイン認証
     const { error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
@@ -86,8 +75,10 @@ const handleLogin = async () => {
 
     if (error) throw error;
 
+    // 認証状態の更新を待つ
+    await supabase.auth.getSession();
     // 明示的にホームページに遷移
-    await router.push("/");
+    await navigateTo("/");
   } catch (error: any) {
     console.error("Login error:", error.message);
     errorMessage.value =

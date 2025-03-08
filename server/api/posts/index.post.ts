@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
         {
           title: body.title,
           content: body.content,
-          status: "draft", // デフォルトはドラフト状態
+          status: "published",
           user_id: "f5bbf350-0de4-1dc8-d895-fc59e2651361",
         },
       ])

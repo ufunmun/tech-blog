@@ -1,3 +1,7 @@
+// 1.Supabaseのインスタンスを作成
+// 2.シングルトンインスタンスの保持
+// 3.インスタンスを返す
+// 4.Supabaseとの接続を提供し、その接続を使ってuseAuthがログイン状態を管理
 import { createClient } from "@supabase/supabase-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useRuntimeConfig } from "nuxt/app";

@@ -1,7 +1,7 @@
 import { supabase } from "../../config/supabase";
 import { defineEventHandler } from "h3";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   try {
     const { data: posts, error: supabaseError } = await supabase
       .from("posts")

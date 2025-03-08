@@ -52,27 +52,28 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useSupabase } from "~/composables/useSupabase";
 import { useAuth } from "~/composables/useAuth";
+import { navigateTo } from "nuxt/app";
+import { useFetch } from "nuxt/app";
 
 const router = useRouter();
 const { user } = useAuth();
-const client = useSupabase();
-
 const title = ref("");
 const content = ref("");
 const titleError = ref("");
 const contentError = ref("");
+// 処理中の状態を管理。UIの表示状態とユーザー操作性を制御
 const isLoading = ref(false);
 
 const handleSubmit = async () => {
   // すでに実行中なら何もしない
   if (isLoading.value) return;
 
-  // バリデーション
+  // バリデーションエラーをクリア
   titleError.value = "";
   contentError.value = "";
 
+  // バリデーション
   if (!title.value.trim()) {
     titleError.value = "タイトルを入力してください";
     return;
@@ -85,19 +86,23 @@ const handleSubmit = async () => {
   isLoading.value = true;
 
   try {
-    const { error } = await client.from("posts").insert({
-      title: title.value.trim(),
-      content: content.value.trim(),
-      user_id: user.value?.id,
-      status: "published",
+    const { error } = await useFetch("/api/posts", {
+      method: "POST",
+      body: {
+        title: title.value.trim(),
+        content: content.value.trim(),
+        status: "published",
+        user_id: user.value?.id,
+      },
     });
 
-    if (error) throw error;
+    if (error.value) {
+      throw error.value;
+    }
 
-    // 成功したら記事一覧ページへ
-    await router.push("/");
+    await navigateTo("/");
   } catch (error: any) {
-    console.error("Error:", error.message);
+    console.error("Error:", error);
     alert("記事の投稿に失敗しました");
   } finally {
     isLoading.value = false;

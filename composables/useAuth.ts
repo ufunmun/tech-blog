@@ -1,3 +1,6 @@
+// 1.ログイン状態（true/false）を管理
+// 2.この状態をほかのファイルで使えるように提供
+// 3.ログイン/ログアウトを検知して状態を更新
 import { ref, computed } from "vue";
 import type { User } from "@supabase/supabase-js";
 import { useSupabase } from "~/composables/useSupabase";
@@ -10,8 +13,7 @@ export const useAuth = () => {
 
   if (process.client) {
     // 認証状態の変更を監視
-    supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event, session?.user?.email); // デバッグ用
+    supabase.auth.onAuthStateChange((_event, session) => {
       user.value = session?.user || null;
     });
   }
