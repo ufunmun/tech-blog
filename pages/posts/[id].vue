@@ -19,6 +19,25 @@
             更新日: {{ new Date(post.updated_at).toLocaleString() }}
           </div>
         </v-card-text>
+        <v-card-actions class="d-flex justify-end">
+          <!-- 削除ボタン -->
+          <v-btn
+            color="primary"
+            variant="outlined"
+            @click="navigateTo('/')"
+            class="mr-2"
+          >
+            戻る
+          </v-btn>
+          <v-btn
+            color="error"
+            :loading="isDeleting"
+            @click="handleDelete"
+            class="mr-2"
+          >
+            削除
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </div>
   </v-container>
@@ -27,6 +46,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { navigateTo } from "nuxt/app";
 
 // 型定義
 interface Post {
@@ -43,25 +63,42 @@ const route = useRoute();
 const post = ref<Post | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const isDeleting = ref(false);
 
 // 記事データを取得
 const fetchPost = async () => {
   try {
-    const response = await fetch(`/api/posts/${route.params.id}`);
-    const data = await response.json();
-
-    if (response.ok) {
-      post.value = data.post;
-    } else {
-      error.value = data.message;
+    loading.value = true;
+    const response = await $fetch<{ post: Post }>(`/api/posts/${route.params.id}`)
+    post.value = response.post;
+    } catch (e) {
+      error.value = "記事の取得に失敗しました"
+      console.error("Error:", e)
+    } finally {
+      loading.value = false;
     }
-  } catch (e) {
-    error.value = "記事の取得に失敗しました";
-  } finally {
-    loading.value = false;
   }
-};
 
+// 記事を削除
+const handleDelete = async () => {
+  if(!confirm("本当にこの記事を削除しますか？")) {
+    return;
+  }
+
+  isDeleting.value = true;
+
+  try {
+    await $fetch(`/api/posts/${route.params.id}`,{
+      method: "DELETE",
+    });
+    await navigateTo("/");
+  } catch (e) {
+    error.value = "記事の削除に失敗しました";
+    console.error("Error:", e);
+  } finally {
+    isDeleting.value = false;
+  }
+}
 // コンポーネントマウント時に記事を取得
 onMounted(() => {
   fetchPost();
