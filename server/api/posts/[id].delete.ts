@@ -6,11 +6,11 @@ export default defineEventHandler(async (event) => {
   try {
     const id = event.context.params?.id;
 
-    if(!id || typeof id !== "string") {
+    if (!id || typeof id !== "string") {
       return {
         statusCode: 400,
         message: "Post ID is required",
-        error: "Missing post ID"
+        error: "Missing post ID",
       };
     }
 
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
       .delete()
       .eq("id", id);
 
-    if(supabaseError) {
+    if (supabaseError) {
       return {
         statusCode: 400,
         message: "Database query failed",
@@ -45,14 +45,13 @@ export default defineEventHandler(async (event) => {
 
     return {
       statusCode: 200,
-      message: "Post deleted successfully"
-    }
-
-  } catch(error) {
+      message: "Post deleted successfully",
+    };
+  } catch (error) {
     return {
       statusCode: 500,
       message: "Internal server error",
       error: error instanceof Error ? error.message : "Unknown error",
-    }
+    };
   }
-})
+});

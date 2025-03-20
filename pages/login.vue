@@ -40,6 +40,11 @@
               {{ isLoading ? "ログイン中..." : "ログイン" }}
             </v-btn>
           </v-form>
+          <v-card-text class="text-center mt-4">
+            <v-btn variant="text" color="primary" @click="navigateToSignup">
+              新規登録
+            </v-btn>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -85,6 +90,18 @@ const handleLogin = async () => {
       "ログインに失敗しました。メールアドレスとパスワードを確認してください。";
   } finally {
     isLoading.value = false;
+  }
+};
+
+// 新規登録ページへの遷移
+const navigateToSignup = async () => {
+  console.log("新規登録ボタンクリック");
+  try {
+    console.log("遷移開始： /signup");
+    await navigateTo("/signup");
+    console.log("遷移完了");
+  } catch (error) {
+    console.error("遷移エラー:", error);
   }
 };
 </script>

@@ -11,7 +11,17 @@ const user = ref<User | null>(null);
 export const useAuth = () => {
   const supabase = useSupabase();
 
+  // 初期状態の取得
+  const initAuth = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    user.value = session?.user || null;
+  };
   if (process.client) {
+    // 初期状態の取得
+    initAuth();
+
     // 認証状態の変更を監視
     supabase.auth.onAuthStateChange((_event, session) => {
       user.value = session?.user || null;

@@ -69,26 +69,28 @@ const isDeleting = ref(false);
 const fetchPost = async () => {
   try {
     loading.value = true;
-    const response = await $fetch<{ post: Post }>(`/api/posts/${route.params.id}`)
+    const response = await $fetch<{ post: Post }>(
+      `/api/posts/${route.params.id}`,
+    );
     post.value = response.post;
-    } catch (e) {
-      error.value = "記事の取得に失敗しました"
-      console.error("Error:", e)
-    } finally {
-      loading.value = false;
-    }
+  } catch (e) {
+    error.value = "記事の取得に失敗しました";
+    console.error("Error:", e);
+  } finally {
+    loading.value = false;
   }
+};
 
 // 記事を削除
 const handleDelete = async () => {
-  if(!confirm("本当にこの記事を削除しますか？")) {
+  if (!confirm("本当にこの記事を削除しますか？")) {
     return;
   }
 
   isDeleting.value = true;
 
   try {
-    await $fetch(`/api/posts/${route.params.id}`,{
+    await $fetch(`/api/posts/${route.params.id}`, {
       method: "DELETE",
     });
     await navigateTo("/");
@@ -98,7 +100,7 @@ const handleDelete = async () => {
   } finally {
     isDeleting.value = false;
   }
-}
+};
 // コンポーネントマウント時に記事を取得
 onMounted(() => {
   fetchPost();
