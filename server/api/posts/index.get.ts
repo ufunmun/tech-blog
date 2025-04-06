@@ -1,14 +1,42 @@
 import { supabase } from "../../config/supabase";
-import { defineEventHandler } from "h3";
+import { defineEventHandler, getQuery } from "h3";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   try {
-    const { data: posts, error: supabaseError } = await supabase
-      .from("posts")
-      .select("*");
+    const query = getQuery(event);
+    const categoryId = query.categoryId as string;
 
-    // Supabaseのエラーハンドリング
+    console.log('🔍 Fetching posts with categoryId:', categoryId);
+
+    let postsQuery = supabase
+      .from('posts')
+      .select(`
+        *,
+        posts_categories!inner(
+          category_id,
+          categories(
+            id,
+            name
+          )
+        )
+      `);
+
+    if (categoryId) {
+      console.log('📌 Applying category filter:', categoryId);
+      postsQuery = postsQuery.eq('posts_categories.category_id', categoryId);
+    }
+
+    const { data: posts, error: supabaseError } = await postsQuery
+      .order('created_at', { ascending: false });
+
+    console.log('📝 Query result:', {
+      postsCount: posts?.length,
+      firstPost: posts?.[0],
+      categoryId
+    });
+
     if (supabaseError) {
+      console.error('❌ Database query failed:', supabaseError);
       return {
         statusCode: 400,
         message: "Database query failed",
@@ -21,7 +49,7 @@ export default defineEventHandler(async () => {
       message: "Posts fetched successfully",
     };
   } catch (error) {
-    // 予期せぬエラーのハンドリング
+    console.error('❌ Unexpected error:', error);
     return {
       statusCode: 500,
       message: "Internal server error",
