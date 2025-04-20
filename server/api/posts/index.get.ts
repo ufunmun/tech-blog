@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       `);
 
     if (categoryId) {
-      console.log("📌 Applying category filter:", categoryId);
+      console.log("Applying category filter:", categoryId);
       postsQuery = postsQuery.eq("posts_categories.category_id", categoryId);
     }
 
@@ -29,14 +29,14 @@ export default defineEventHandler(async (event) => {
       { ascending: false },
     );
 
-    console.log("📝 Query result:", {
+    console.log("Query result:", {
       postsCount: posts?.length,
       firstPost: posts?.[0],
       categoryId,
     });
 
     if (supabaseError) {
-      console.error("❌ Database query failed:", supabaseError);
+      console.error("Database query failed:", supabaseError);
       return {
         statusCode: 400,
         message: "Database query failed",
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       message: "Posts fetched successfully",
     };
   } catch (error) {
-    console.error("❌ Unexpected error:", error);
+    console.error("Unexpected error:", error);
     return {
       statusCode: 500,
       message: "Internal server error",

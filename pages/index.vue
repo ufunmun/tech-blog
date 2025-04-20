@@ -85,7 +85,7 @@ const isLoading = ref(false);
 const fetchPosts = async () => {
   isLoading.value = true;
   try {
-    console.log("🔍 Fetching posts with categoryId:", selectedCategoryId.value);
+    console.log("Fetching posts with categoryId:", selectedCategoryId.value);
 
     const response = await $fetch<{ posts: Post[]; message: string }>(
       `/api/posts${
@@ -95,13 +95,13 @@ const fetchPosts = async () => {
       }`,
     );
 
-    console.log("📝 Received response:", response);
+    console.log("Received response:", response);
 
     posts.value = response.posts || [];
 
-    console.log("✅ Updated posts:", posts.value.length);
+    console.log("Updated posts:", posts.value.length);
   } catch (error) {
-    console.error("❌ Error fetching posts:", error);
+    console.error("Error fetching posts:", error);
   } finally {
     isLoading.value = false;
   }
@@ -109,7 +109,7 @@ const fetchPosts = async () => {
 
 // カテゴリー選択の監視
 watch(selectedCategoryId, (newValue) => {
-  console.log("📌 Category changed to:", newValue);
+  console.log("Category changed to:", newValue);
   fetchPosts();
 });
 

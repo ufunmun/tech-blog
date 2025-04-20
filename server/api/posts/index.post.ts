@@ -5,11 +5,11 @@ import { PostgrestError } from "@supabase/supabase-js";
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
-    console.log("📝 Received request body:", body); // リクエストボディの確認
+    console.log("Received request body:", body); // リクエストボディの確認
 
     // バリデーション
     if (!body.title || typeof body.title !== "string") {
-      console.log("❌ Validation failed: Invalid title");
+      console.log("Validation failed: Invalid title");
       return {
         statusCode: 400,
         message: "Title is required",
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!body.content || typeof body.content !== "string") {
-      console.log("❌ Validation failed: Invalid content");
+      console.log("Validation failed: Invalid content");
       return {
         statusCode: 400,
         message: "Content is required",
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // 記事データを作成
-    console.log("📌 Creating post with data:", {
+    console.log("Creating post with data:", {
       title: body.title,
       content: body.content.substring(0, 50) + "...", // コンテンツは長いかもしれないので省略
       status: "published",
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
     // 記事作成のエラーハンドリング
     if (postError) {
-      console.error("❌ Failed to create post:", postError);
+      console.error("Failed to create post:", postError);
       return {
         statusCode: 400,
         message: "Failed to create post",
@@ -57,11 +57,11 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    console.log("✅ Post created successfully:", post);
+    console.log("Post created successfully:", post);
 
     // カテゴリーが選択されている場合、posts_categoriesテーブルに紐付けを作成
     if (body.categoryId && post) {
-      console.log("📌 Linking post to category:", {
+      console.log("Linking post to category:", {
         post_id: post.id,
         category_id: body.categoryId,
         post: post, // 投稿データ全体も確認
@@ -77,14 +77,14 @@ export default defineEventHandler(async (event) => {
         ])
         .select(); // 結果を確認するためにselect追加
 
-      console.log("📝 Category link result:", {
+      console.log("Category link result:", {
         data: linkData,
         error: categoryError,
         sql: `INSERT INTO posts_categories (post_id, category_id) VALUES ('${post.id}', '${body.categoryId}')`, // 実行されるSQLのイメージ
       });
 
       if (categoryError) {
-        console.error("❌ Failed to link category:", {
+        console.error("Failed to link category:", {
           error: categoryError,
           errorMessage: categoryError.message,
           errorDetails: categoryError.details,
@@ -97,13 +97,13 @@ export default defineEventHandler(async (event) => {
         };
       }
 
-      console.log("✅ Category linked successfully", {
+      console.log("Category linked successfully", {
         linkData,
         post_id: post.id,
         category_id: body.categoryId,
       });
     } else {
-      console.log("ℹ️ No category to link", {
+      console.log("No category to link", {
         body_categoryId: body.categoryId,
         post: post,
       });
@@ -114,7 +114,7 @@ export default defineEventHandler(async (event) => {
       message: "Post created successfully",
     };
   } catch (error) {
-    console.error("❌ Unexpected error:", error);
+    console.error("Unexpected error:", error);
     return {
       statusCode: 500,
       message: "Internal server error",
