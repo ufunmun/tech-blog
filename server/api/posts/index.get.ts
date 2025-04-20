@@ -6,11 +6,9 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const categoryId = query.categoryId as string;
 
-    console.log('🔍 Fetching posts with categoryId:', categoryId);
+    console.log("🔍 Fetching posts with categoryId:", categoryId);
 
-    let postsQuery = supabase
-      .from('posts')
-      .select(`
+    let postsQuery = supabase.from("posts").select(`
         *,
         posts_categories!inner(
           category_id,
@@ -22,21 +20,23 @@ export default defineEventHandler(async (event) => {
       `);
 
     if (categoryId) {
-      console.log('📌 Applying category filter:', categoryId);
-      postsQuery = postsQuery.eq('posts_categories.category_id', categoryId);
+      console.log("📌 Applying category filter:", categoryId);
+      postsQuery = postsQuery.eq("posts_categories.category_id", categoryId);
     }
 
-    const { data: posts, error: supabaseError } = await postsQuery
-      .order('created_at', { ascending: false });
+    const { data: posts, error: supabaseError } = await postsQuery.order(
+      "created_at",
+      { ascending: false },
+    );
 
-    console.log('📝 Query result:', {
+    console.log("📝 Query result:", {
       postsCount: posts?.length,
       firstPost: posts?.[0],
-      categoryId
+      categoryId,
     });
 
     if (supabaseError) {
-      console.error('❌ Database query failed:', supabaseError);
+      console.error("❌ Database query failed:", supabaseError);
       return {
         statusCode: 400,
         message: "Database query failed",
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       message: "Posts fetched successfully",
     };
   } catch (error) {
-    console.error('❌ Unexpected error:', error);
+    console.error("❌ Unexpected error:", error);
     return {
       statusCode: 500,
       message: "Internal server error",

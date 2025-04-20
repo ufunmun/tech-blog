@@ -6,7 +6,8 @@ export interface Post {
   user_id: string;
   created_at: string;
   updated_at: string;
-  posts_categories?: {  // posts_categoriesプロパティを追加
+  posts_categories?: {
+    // posts_categoriesプロパティを追加
     category_id: string;
     categories: {
       id: string;

@@ -89,34 +89,34 @@ onMounted(() => {
 const handleSubmit = async () => {
   if (isLoading.value) return;
 
-  console.log('🔍 Form validation starting');
+  console.log("🔍 Form validation starting");
 
   titleError.value = "";
   contentError.value = "";
 
   // バリデーションのデバッグログ
   if (!title.value.trim()) {
-    console.log('❌ Validation failed: Title is empty');
+    console.log("❌ Validation failed: Title is empty");
     titleError.value = "タイトルを入力してください";
     return;
   }
   if (!content.value.trim()) {
-    console.log('❌ Validation failed: Content is empty');
+    console.log("❌ Validation failed: Content is empty");
     contentError.value = "本文を入力してください";
     return;
   }
 
-  console.log('✅ Validation passed');
+  console.log("✅ Validation passed");
 
   isLoading.value = true;
 
   try {
-    console.log('📝 Submitting post with data:', {
+    console.log("📝 Submitting post with data:", {
       title: title.value.trim(),
-      content: content.value.trim().substring(0, 50) + '...', // 長いコンテンツは省略
+      content: content.value.trim().substring(0, 50) + "...", // 長いコンテンツは省略
       status: "published",
       user_id: user.value?.id,
-      categoryId: selectedCategoryId.value
+      categoryId: selectedCategoryId.value,
     });
 
     const { error } = await useFetch("/api/posts", {
@@ -126,39 +126,39 @@ const handleSubmit = async () => {
         content: content.value.trim(),
         status: "published",
         user_id: user.value?.id,
-        categoryId: selectedCategoryId.value
+        categoryId: selectedCategoryId.value,
       },
     });
 
     if (error.value) {
-      console.error('❌ API error:', error.value);
+      console.error("❌ API error:", error.value);
       throw error.value;
     }
 
-    console.log('✅ Post submitted successfully');
-    console.log('📍 Navigating to home page');
+    console.log("✅ Post submitted successfully");
+    console.log("📍 Navigating to home page");
     await navigateTo("/");
   } catch (error: any) {
     console.error("❌ Error submitting post:", error);
     alert("記事の投稿に失敗しました");
   } finally {
-    console.log('🔄 Request completed, isLoading set to false');
+    console.log("🔄 Request completed, isLoading set to false");
     isLoading.value = false;
   }
 };
 
 // カテゴリー取得のデバッグログも追加
 onMounted(async () => {
-  console.log('🔍 Fetching categories');
+  console.log("🔍 Fetching categories");
   await fetchCategories();
-  console.log('📋 Available categories:', categories.value);
+  console.log("📋 Available categories:", categories.value);
 });
 
 // カテゴリー選択のwatcher追加
 watch(
   () => selectedCategoryId.value,
   (newValue: string | null) => {
-    console.log('📌 Selected category changed:', newValue);
-  }
+    console.log("📌 Selected category changed:", newValue);
+  },
 );
 </script>
